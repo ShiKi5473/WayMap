@@ -18,12 +18,12 @@ class PhotonGeocoderTest {
     }
 
     @Test
-    fun featuresWithoutGeometryAreSkippedAndBlankNamesGetAPlaceholder() {
+    fun featuresWithoutGeometryAreSkippedAndBlankNamesAreEmpty() {
         val json = """{"features":[{"properties":{"name":"x"}},
             {"geometry":{"coordinates":[121.0,25.0]},"properties":{}}]}"""
         val places = PhotonGeocoder.parse(json)
         assertEquals(1, places.size)
-        assertEquals("未命名地點", places[0].name)
+        assertEquals("", places[0].name)
     }
 
     @Test

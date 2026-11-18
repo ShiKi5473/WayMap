@@ -59,6 +59,16 @@ class GeoUtilsTest {
     }
 
     @Test
+    fun normalizeBearingWrapsBothWays() {
+        assertEquals(270.0, GeoUtils.normalizeBearing(-90.0), 1e-9)
+        assertEquals(0.0, GeoUtils.normalizeBearing(360.0), 1e-9)
+        assertEquals(5.0, GeoUtils.normalizeBearing(725.0), 1e-9)
+        assertEquals(350, GeoUtils.normalizeBearing(-10))
+        assertEquals(0, GeoUtils.normalizeBearing(360))
+        assertEquals(180, GeoUtils.normalizeBearing(180))
+    }
+
+    @Test
     fun kmhToMs() {
         assertEquals(1.25, GeoUtils.kmhToMs(4.5), 1e-9)
     }

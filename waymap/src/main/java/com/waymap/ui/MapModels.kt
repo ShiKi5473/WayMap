@@ -12,6 +12,35 @@ import com.waymap.geo.LatLng
 class CenterRequest(val point: LatLng, val zoom: Double? = null)
 
 /**
+ * A one-shot "fit these points on screen" camera move. Deliberately NOT a data class,
+ * for the same reason as [CenterRequest]: every request is a new identity, so asking
+ * for the same points again fits again.
+ *
+ * No points: nothing happens. One point (or all identical): centers there at [maxZoom].
+ * Otherwise the camera frames all points with [paddingDp] on every side, never zoomed
+ * in past [maxZoom]. Applied once the map view has a size.
+ */
+class FitRequest(
+    val points: List<LatLng>,
+    val paddingDp: Int = 48,
+    val maxZoom: Double = 17.0,
+    val animate: Boolean = true,
+)
+
+/**
+ * A location pushed by the app (e.g. snapped to a road or from its own provider)
+ * instead of the one MapLibre reads from the device. While non-null, the puck shows
+ * it and MapLibre's own location engine is detached. Null optionals are left unset
+ * on the platform location (no bearing / speed / accuracy).
+ */
+data class UserFix(
+    val pos: LatLng,
+    val bearingDeg: Float? = null,
+    val speedMps: Float? = null,
+    val accuracyM: Float? = null,
+)
+
+/**
  * An image registered into the map style under [id]. [factory] runs once per style
  * load, so it may allocate freely. Not a data class: lambdas don't compare by value,
  * and icons are matched by [id] only.

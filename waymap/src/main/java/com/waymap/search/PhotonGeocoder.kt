@@ -8,7 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-/** A named position returned by a place search. */
+/**
+ * A named position returned by a place search. [name] may be empty when Photon
+ * returns no name; the caller picks the placeholder text to display.
+ */
 data class GeoPlace(val name: String, val pos: LatLng)
 
 /**
@@ -57,7 +60,10 @@ class PhotonGeocoder(
             }
         }
 
-        /** "name, street, city" from whatever Photon returned, skipping blanks/duplicates. */
+        /**
+         * "name, street, city" from whatever Photon returned, skipping blanks/duplicates.
+         * Returns "" when nothing usable is present; the caller supplies placeholder text.
+         */
         private fun label(p: JSONObject): String =
             listOf("name", "street", "district", "city", "country")
                 .map { p.optString(it) }
@@ -65,6 +71,5 @@ class PhotonGeocoder(
                 .distinct()
                 .take(3)
                 .joinToString(", ")
-                .ifBlank { "未命名地點" }
     }
 }

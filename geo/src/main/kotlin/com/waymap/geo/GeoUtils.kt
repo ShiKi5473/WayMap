@@ -34,8 +34,14 @@ object GeoUtils {
         val dLon = Math.toRadians(b.lon - a.lon)
         val y = sin(dLon) * cos(lat2)
         val x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon)
-        return (Math.toDegrees(atan2(y, x)) + 360.0) % 360.0
+        return normalizeBearing(Math.toDegrees(atan2(y, x)))
     }
+
+    /** [deg] wrapped into 0..360 (e.g. -90 → 270, 360 → 0). */
+    fun normalizeBearing(deg: Double): Double = ((deg % 360.0) + 360.0) % 360.0
+
+    /** [deg] wrapped into 0..359. */
+    fun normalizeBearing(deg: Int): Int = ((deg % 360) + 360) % 360
 
     /** Point reached by travelling [distanceMeters] from [start] along [bearingDeg]. */
     fun destinationPoint(start: LatLng, distanceMeters: Double, bearingDeg: Double): LatLng {
